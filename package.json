@@ -1,0 +1,29 @@
+{
+  "name": "ximalaya-live-acc",
+  "version": "1.0.0",
+  "description": "access for ximalaya live",
+  "main": "main.js",
+  "scripts": {
+    "build": "node main.js",
+    "dev-install": "npm install && npm install -g asar",
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qt06/ximalaya-live-acc.git"
+  },
+  "keywords": [
+    "ximalaya",
+    "live",
+    "accessibility"
+  ],
+  "author": "qt06",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qt06/ximalaya-live-acc/issues"
+  },
+  "homepage": "https://github.com/qt06/ximalaya-live-acc#readme",
+  "dependencies": {
+    "shelljs": "^0.8.3"
+  }
+}
