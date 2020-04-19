@@ -5,7 +5,6 @@
   "main": "main.js",
   "scripts": {
     "build": "node main.js",
-    "dev-install": "npm install && npm install -g asar",
     "test": "test.js"
   },
   "repository": {
@@ -24,6 +23,7 @@
   },
   "homepage": "https://github.com/qt06/ximalaya-live-acc#readme",
   "dependencies": {
+    "asar": "^3.0.3",
     "shelljs": "^0.8.3"
   }
 }
