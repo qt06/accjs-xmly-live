@@ -3,11 +3,11 @@ const shell = require('shelljs');
 const current_dir = __dirname;
 const localappdata = process.env.localappdata;
 const resource_dir = localappdata + '/programs/ximalaya-live/resources';
-const index_html = resource_dir + '/app/react/index.html';
+const index_html = resource_dir + '/app/react/build/index.html';
 shell.cd(resource_dir);
 shell.rm('-rf', 'app');
 shell.exec('asar e app.asar app');
-shell.cp(current_dir + '/src/js/*.js', resource_dir + '/app/react/static/js');
+shell.cp(current_dir + '/src/js/*.js', resource_dir + '/app/react/build/static/js');
 
 let f = fs.readFileSync(index_html, 'utf8');
 let s = '<script type="text/javascript" src="./static/js/jquery.min.js"></script><script type="text/javascript" src="./static/js/acc.js"></script>';
