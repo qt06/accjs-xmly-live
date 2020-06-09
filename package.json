@@ -24,6 +24,7 @@
   "homepage": "https://github.com/qt06/ximalaya-live-acc#readme",
   "dependencies": {
     "asar": "^3.0.3",
+    "jquery": "^3.5.1",
     "shelljs": "^0.8.3"
   }
 }
