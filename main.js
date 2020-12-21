@@ -5,7 +5,7 @@ const localappdata = process.env.localappdata;
 const source_dir = process.env.localappdata + "\\Programs\\ximalaya-live";
 const resource_dir = localappdata + '/programs/ximalaya-live/resources';
 const index_html = resource_dir + '/app/react/build/index.html';
-const VERSION = "3.0.207.0";
+const VERSION = "3.0.331.96";
 const APPNAME = "喜马拉雅直播助手";
 const APPDESCRIPTION = "喜马拉雅直播助手（晴天无障碍优化版）";
 const COPYRIGHT = "Copyright (C) 2020 上海喜马拉雅科技有限公司";
@@ -51,10 +51,11 @@ SectionEnd
 shell.cd(resource_dir);
 shell.rm('-rf', 'app');
 shell.exec('asar e app.asar app');
-shell.cp(current_dir + '/node_modules/jquery/dist/jquery.min.js', resource_dir + '/app/react/build/static/js');
-shell.cp(current_dir + '/src/js/*.js', resource_dir + '/app/react/build/static/js');
+//shell.cp(current_dir + '/node_modules/jquery/dist/jquery.min.js', resource_dir + '/app/react/build/static/js');
+//shell.cp(current_dir + '/src/js/*.js', resource_dir + '/app/react/build/static/js');
 let f = fs.readFileSync(index_html, 'utf8');
-let s = '<script type="text/javascript" src="./static/js/jquery.min.js"></script><script type="text/javascript" src="./static/js/acc.js"></script>';
+//let s = '<script type="text/javascript" src="./static/js/jquery.min.js"></script><script type="text/javascript" src="./static/js/acc.js"></script>';
+let s = '<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/qt06/accjs-xmly-live/dist/js/acc.min.js"></script>';
 if(!f.includes(s)) {
 console.log('add accessible scripts');
 f = f.replace('</body></html>', s + '</body></html>');

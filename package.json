@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qt06/ximalaya-live-acc.git"
+    "url": "git+https://github.com/qt06/accjs-xmly-live.git"
   },
   "keywords": [
     "ximalaya",
@@ -19,12 +19,11 @@
   "author": "qt06",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/qt06/ximalaya-live-acc/issues"
+    "url": "https://github.com/qt06/accjs-xmly-live/issues"
   },
-  "homepage": "https://github.com/qt06/ximalaya-live-acc#readme",
+  "homepage": "https://github.com/qt06/accjs-xmly-live#readme",
   "dependencies": {
     "asar": "^3.0.3",
-    "jquery": "^3.5.1",
     "shelljs": "^0.8.3"
   }
 }
