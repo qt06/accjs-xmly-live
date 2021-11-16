@@ -2,10 +2,10 @@ const fs = require('fs');
 const shell = require('shelljs');
 const current_dir = __dirname;
 const localappdata = process.env.localappdata;
-const source_dir = process.env.localappdata + "\\Programs\\ximalaya-live";
-const resource_dir = localappdata + '/programs/ximalaya-live/resources';
-const index_html = resource_dir + '/app/react/build/index.html';
-const VERSION = "3.0.331.96";
+const source_dir = process.env.localappdata + "\\Programs\\xmly-live";
+const resource_dir = localappdata + '/programs/xmly-live/resources';
+const index_html = resource_dir + '/app/build/renderer/index.html';
+const VERSION = "4.0.147.29";
 const APPNAME = "喜马拉雅直播助手";
 const APPDESCRIPTION = "喜马拉雅直播助手（晴天无障碍优化版）";
 const COPYRIGHT = "Copyright (C) 2020 上海喜马拉雅科技有限公司";
@@ -24,7 +24,7 @@ SetCompressor /SOLID LZMA
 Name "${APPNAME}"
 Caption "${APPNAME} ${VERSION} 安装程序"
 BrandingText "晴天优化，联系qq： 115928478"
-OutFile "ximalaya_live_acc_${VERSION}.exe"
+OutFile "xmly_live_acc_${VERSION}.exe"
 VIProductVersion "${VERSION}"
 ;Needs to be here so other version info shows up
 VIAddVersionKey "ProductName" "${APPNAME}"
@@ -32,7 +32,7 @@ VIAddVersionKey "LegalCopyright" "${COPYRIGHT}"
 VIAddVersionKey "FileDescription" "${APPDESCRIPTION}"
 VIAddVersionKey "FileVersion" "${VERSION}"
 VIAddVersionKey "ProductVersion" "${VERSION}"
-InstallDir "$LOCALAPPDATA\\Programs\\ximalaya-live\\"
+InstallDir "$LOCALAPPDATA\\Programs\\xmly-live\\"
 RequestExecutionLevel user
 !define MUI_ABORTWARNING
 !insertmacro MUI_PAGE_WELCOME
@@ -55,7 +55,7 @@ shell.exec('asar e app.asar app');
 //shell.cp(current_dir + '/src/js/*.js', resource_dir + '/app/react/build/static/js');
 let f = fs.readFileSync(index_html, 'utf8');
 //let s = '<script type="text/javascript" src="./static/js/jquery.min.js"></script><script type="text/javascript" src="./static/js/acc.js"></script>';
-let s = '<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/qt06/accjs-xmly-live/dist/js/acc.min.js"></script>';
+let s = '<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/qt06/accjs-xmly-live/dist/js/xmly-live-acc.js"></script>';
 if(!f.includes(s)) {
 console.log('add accessible scripts');
 f = f.replace('</body></html>', s + '</body></html>');
@@ -64,7 +64,7 @@ console.log('accessible scripts has added.');
 } else {
 console.log('do not need add accessible scripts');
 }
-shell.exec('asar pack app app.asar --unpack-dir "{node_modules/zegoliveroom,assets/audios}"');
+shell.exec('asar pack app app.asar --unpack-dir "{build/libs/zegoliveroom,build/audios}"');
 shell.rm('-rf', 'app');
 shell.cd(current_dir);
 fs.writeFileSync('install-script.nsi', "\ufeff" + installScriptTemplate, 'utf8');
