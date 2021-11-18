@@ -311,6 +311,7 @@ t.click();
 }
 }
 }, null);
-amo(proc);
-proc();
+//amo(proc);
+//proc();
+setInterval(function() {proc();}, 1000);
 })();
