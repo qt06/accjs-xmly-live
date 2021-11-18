@@ -199,12 +199,14 @@ el.setAttribute('tabindex', '0');
 
 
 //msg 
+/**
 let els = document.querySelectorAll('.chat-msg-item');
 let al = document.querySelector('#al');
 let index = els.length - 1;
 if(els[index].innerText != al.innerText) {
 al.innerText = els[index].innerText;
 }
+*/
 //end proc
 }
 function dialogFocus() {
