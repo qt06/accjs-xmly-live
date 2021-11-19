@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name  喜马拉雅直播助手无障碍优化
-// @namespacehttps://accjs.org/
+// @namespace  https://accjs.org/
 // @version  0.3
 // @description  喜马拉雅直播助手无障碍优化脚本
 // @author  杨永全
-// @updated  2021-11-19 15:51:07
+// @updated  2021-11-19 15:57:07
 // @match  https://*.*
 // @grant  none
 // ==/UserScript==
