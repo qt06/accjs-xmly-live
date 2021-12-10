@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name  喜马拉雅直播助手无障碍优化
 // @namespace  https://accjs.org/
-// @version  0.3
+// @version  0.4
 // @description  喜马拉雅直播助手无障碍优化脚本
 // @author  杨永全
-// @updated  2021-11-19 15:57:07
+// @updated  2021-12-10 10:26:50
 // @match  https://*.*
 // @grant  none
 // ==/UserScript==
@@ -52,7 +52,7 @@ options = options || {
 'childList': true,
 'subtree': true
 };
-let mo = new MutationObserver((records) => {proc();});
+let mo = new MutationObserver(proc);
 mo.observe(target, options);
 return mo;
 }
@@ -167,7 +167,7 @@ const labels = {
 "指定Pk": "指定Pk",
 "pk-rule": "PK规则"
 };
-function proc() {
+function proc(records) {
 //buttons
 q('.window-icon:not(.accjs-has)').forEach((el) => {
 button(el, getLabel(labels, el.getAttribute('class')));
@@ -209,21 +209,24 @@ addClass(el, 'accjs-has');
 //dialog
 q('.rc-dialog-wrap').forEach((el) => {
 //remove aria-hidden and tabindex attribute from role=dialog
-q('[role="dialog"] [aria-hidden="true"][tabindex="0"]:not(.accjs-has)', el).forEach((el) => {
+q('[aria-hidden="true"][tabindex="0"]', el).forEach((el) => {
 el.removeAttribute('tabindex');
 el.removeAttribute('aria-hidden');
-addClass(el, 'accjs-has');
 });
 //remove role=dialog and role=document
-q('[role="dialog"]:not(.accjs-has), [role="document"]:not(.accjs-has)', el).forEach((el) => {
+q('[role="document"]', el).forEach((el) => {
 el.removeAttribute('role');
-addClass(el, 'accjs-has');
 });
 q('.toolbox-button:not(.accjs-has)', el).forEach((el) => {
 button(el, '连线设置');
 });
 q('.pk-mode-selection .mode-item .mode-image:not(.accjs-has), .noraml-pk-item:not(.accjs-has)', el).forEach((el) => {
 button(el, getLabel(labels, el.getAttribute('data-ubt-params')));
+});
+
+//apply PK buttons
+q('.btn-group .left, .btn-group .right', el).forEach((el) => {
+button(el);
 });
 });
 
@@ -233,59 +236,88 @@ audienceNotification();
 //gift notification
 giftNotification();
 
+//PK notification
+PKNotification();
+
 //msg  notification
 msgNotification();
 
 //end proc
 }
+
+function elementFocus(selector, index) {
+index = index || 0;
+els = q(selector);
+let len = els.length;
+if(len) {
+index = (index < 0 || index >= len) ? len - 1 : index;
+_toFocus(els[index]);
+}
+}
+
+function getTextOnce(selector) {
+let as = [];
+
+selector = selector.split(',').join(':not(.accjs-has),') + ':not(.accjs-has)';
+q(selector).forEach((el) => {
+as.push(el.innerText);
+addClass(el, 'accjs-has');
+});
+return as;
+}
+
+function sendSystemMessage(text) {
+if(text.length) {
+let div = document.createElement('div');
+div.classList.add('chat-msg-item');
+div.innerHTML = '<div class="system-msg"><div class="system-msg-title">' + text + '</div></div>';
+let container = document.querySelector('.chat-scroll-content');
+if(container) {
+container.appendChild(div);
+}
+}
+}
+
+function toggleAudienceNotification() {
+if(document.body.hasAttribute('data-acc-audience-notification')) {
+document.body.removeAttribute('data-acc-audience-notification');
+sendSystemMessage('已关闭听众进入通知');
+} else {
+document.body.setAttribute('data-acc-audience-notification', 'on');
+sendSystemMessage('已开启听众进入通知');
+}
+}
+
 function audienceNotification() {
-let as = [];
-q('.online-list-item .audience-name:not(.accjs-has)').forEach((el) => {
-as.push(el.innerText);
-addClass(el, 'accjs-has');
-});
-if(as.length) {
-let div = document.createElement('div');
-div.classList.add('chat-msg-item');
-div.innerHTML = '<div class="system-msg"><div class="system-msg-title">' + as.join('和') + '进入了直播间</div></div>';
-let container = document.querySelector('.chat-scroll-content');
-if(container) {
-container.appendChild(div);
+if(document.body.hasAttribute('data-acc-audience-notification')) {
+let text = getTextOnce('.online-list-item .audience-name');
+if(text.length) {
+text = text.join(',') + '进入了直播间';
+sendSystemMessage(text);
 }
 }
 }
+
 function giftNotification() {
-let as = [];
-q('.gift-msg-item:not(.accjs-has)').forEach((el) => {
-as.push(el.innerText);
-addClass(el, 'accjs-has');
-});
-if(as.length) {
-let div = document.createElement('div');
-div.classList.add('chat-msg-item');
-div.innerHTML = '<div class="system-msg"><div class="system-msg-title">' + as.join('和') + '</div></div>';
-let container = document.querySelector('.chat-scroll-content');
-if(container) {
-container.appendChild(div);
+sendSystemMessage(getTextOnce('.gift-msg-item').join(''));
+}
+
+function PKNotification() {
+let text = getTextOnce('.rc-dialog-wrap .invite-user').join('');
+if(text.length) {
+text = getTextOnce('.rc-dialog-wrap .rc-dialog-title').join('') + text;
+sendSystemMessage(text);
+elementFocus('.rc-dialog-wrap');
 }
 }
-}
+
 function msgNotification() {
-let msg = [];
-q('.chat-msg-item:not(.accjs-has)').forEach((el) => {
-msg.push(el.innerText);
-addClass(el, 'accjs-has');
-});
+let msg = getTextOnce('.chat-msg-item');
 if(msg.length) {
 setLabel(document.querySelector('#al'), msg.join(''));
 }
 }
-function elementFocus(selector) {
-els = q(selector);
-if(els.length) {
-_toFocus(els[0]);
-}
-}
+
 function operation(name) {
 let els = q('.operation-item .name');
 for(let i = 0; i < els.length; i++) {
@@ -296,19 +328,37 @@ break;
 }
 }
 }
+
+function messageFocus(selector, index) {
+elementFocus(selector, index);
+}
+
+function PKMuteToggle() {
+let el = document.querySelector('.mute img');
+if(el !== null) {
+el.click();
+}
+}
+
 function addDebug() {
 if(document.querySelector('#eval-code-container') !== null) {
+let te = document.querySelector('#exec-code');
+te.value = 'document.querySelector("#exec-code").value = document.body.innerHTML;';
+te.focus();
 return false;
 }
 let div = document.createElement('div');
 div.id = 'eval-code-container';
-div.innerHTML = '<textarea id="exec-code" name="exec-code" placeholder="输入js代码"></textarea><button type="button" id="exec-btn">执行</button>';
+div.style = 'width: 0px; height: 0px; overflow: hidden; outline: none;';
+div.innerHTML = '<textarea id="exec-code" name="exec-code" placeholder="输入js代码">document.querySelector("#exec-code").value = document.body.innerHTML;</textarea><button type="button" id="exec-btn">执行</button>';
 document.body.appendChild(div);
 document.querySelector('#exec-btn').addEventListener('click', function(e) {
 let code = document.querySelector('#exec-code').value;
 DOMEval(code);
 }, null);
+document.querySelector('#exec-code').focus();
 }
+
 function removeDebug() {
 let div = document.querySelector('#eval-code-container');
 if(div !== null) {
@@ -322,12 +372,14 @@ return false;
 }
 let div = document.createElement('div');
 div.id = 'al';
+div.style = 'width: 0px; height: 0px; overflow: hidden; outline: none;';
 div.setAttribute('tabindex', '0');
 div.setAttribute('aria-description', '请用争渡读屏监视这里');
 div.setAttribute('aria-label', '');
 div.innerHTML = '';
 document.body.appendChild(div);
 }
+
 document.addEventListener('keydown', function(e) {
 if(!e.key || !e.target) {
 return false;
@@ -352,18 +404,11 @@ e.preventDefault();
 nextFocus(xSelector);
 } else if(e.altKey && key == 'arrowleft') {
 e.preventDefault();
-els = q(xSelector);
-if(els.length) {
-_toFocus(els[0]);
-}
+messageFocus(xSelector, 0);
 } else if(e.altKey && key == 'arrowright') {
 e.preventDefault();
-let els = q(xSelector);
-if(els.length) {
-let index = els.length - 1;
-_toFocus(els[index]);
-}
- } else if (e.altKey && e.shiftKey && key == 'z' || e.shiftKey && key == 'f6') {
+messageFocus(xSelector, -1);
+} else if (e.altKey && e.shiftKey && key == 'z' || e.shiftKey && key == 'f6') {
 e.preventDefault();
 previousFocus(zSelector);
 } else if (e.altKey && key == 'z' || key == 'f6') {
@@ -382,11 +427,11 @@ elementFocus('.gift-container');
 e.preventDefault();
 elementFocus('.pkPanel-container');
 } else if(e.altKey && key == 'm') {
-let el = document.querySelector('.mute img');
-if(el !== null) {
 e.preventDefault();
-el.click();
-}
+PKMuteToggle();
+} else if(e.altKey && key == 'f1') {
+e.preventDefault();
+toggleAudienceNotification();
 } else if(key == 'f1') {
 e.preventDefault();
 operation('PK');
@@ -398,8 +443,8 @@ e.preventDefault();
 t.click();
 }
 }, null);
+document.body.setAttribute('data-acc-audience-notification', 'on');
 createNotificationElement();
 amo(proc);
 proc();
-//setInterval(function() {proc();}, 1000);
 })();
